@@ -70,6 +70,39 @@ async function run() {
       res.status(200).send(result);
     });
 
+    // my add product
+
+    app.get("/myadd-products/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await products.find(query).toArray();
+      res.status(200).send(result);
+    });
+
+    // delete my adding product
+
+    app.delete("/removeproduct/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const result = await products.deleteOne(query);
+      res.send(result);
+    });
+
+    // update product
+
+    app.patch("/update-product/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedata = req.body;
+
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: updatedata,
+      };
+      const result = await products.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
